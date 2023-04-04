@@ -4,7 +4,7 @@ import styles from "@/styles/signup.module.css"
 import { useAuth } from "@/components/Authentication/AuthContext"
 import { useRouter } from "next/router"
 import LoaderComponent from "@/components/Loading"
-import withAuth from "@/utils/withAuth"
+import {LoginNotRequired} from "@/utils/withAuth"
 import LoginForm from "@/components/LoginForm"
 import SignupForm from "@/components/SignupForm"
 
@@ -87,7 +87,7 @@ function Index() {
   
 }
 
-export default withAuth(Index)
+export default LoginNotRequired(Index)
 
 
 

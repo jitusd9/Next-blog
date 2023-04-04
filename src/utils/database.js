@@ -1,5 +1,5 @@
 import { db } from "../../firebaseInit";
-import { collection, getDocs,getDoc,doc, addDoc, setDoc, query, where, limit, startAfter, startAt, orderBy, endBefore, serverTimestamp, deleteDoc } from "firebase/firestore";
+import { collection, getDocs,getDoc,doc, addDoc, setDoc, query, where, limit, startAfter, startAt, orderBy, endBefore, serverTimestamp, deleteDoc, updateDoc } from "firebase/firestore";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 
@@ -98,8 +98,24 @@ export async function createPost( title, content, excerpt, author, authorId ) {
   }
 }
 
-export function updatePost({ id, title, content }) {
+export async function updatePost(id, title, excerpt, content) {
   
+ try {
+  const postRef = doc(db, "posts", id);
+
+  await updateDoc(postRef, {
+    title,
+    excerpt,
+    content,
+    updated : 'edited',
+    createdAt: serverTimestamp()
+  });
+
+  return 'Post updated'
+ } catch (error) {
+  return 'Could not update post'
+ }
+
 }
 
 export async function deletePost(id) {
