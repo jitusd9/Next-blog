@@ -114,19 +114,19 @@ function createSlug(title) {
     .replace(/\s+/g, "-");
 }
 
-export async function getAllPostsPerPage(first,last){
+export async function getAllPostsPerPage(btn, lastVisible){
 
   let querySnapshot 
-  if(last){
+  if(btn === 'next'){
 
-    const docSnap = await getDoc(doc(collection(db, "posts"), last));
+    const docSnap = await getDoc(doc(collection(db, "posts"), lastVisible));
     querySnapshot = query(collection(db, "posts"), orderBy('createdAt', 'desc'), startAfter(docSnap),limit(3));
 
-  }else if(first){
+  }else if(btn === 'prev'){
 
-    const docSnapStart = await getDoc(doc(collection(db, "posts"), first));
-    const docSnapEnd = await getDoc(doc(collection(db, "posts"), last));
-    querySnapshot = query(collection(db, "posts"), orderBy('createdAt', 'desc'),startAt(docSnapStart), endBefore(docSnapEnd),limit(3));
+    const docSnapStart = await getDoc(doc(collection(db, "posts"), firstVisible));
+    
+    querySnapshot = query(collection(db, "posts"), orderBy('createdAt', 'desc'),startAt(docSnapStart),limit(3));
 
   }else{
     querySnapshot = query(collection(db, "posts"), orderBy('createdAt', 'desc'),limit(3));
@@ -146,8 +146,7 @@ export async function getAllPostsPerPage(first,last){
   // console.log('Fist', documentSnapshots.docs[0].id)
 
   const data = {
-    posts,
-    firstVisible:  documentSnapshots.docs[0]?.id ?? null, 
+    posts, 
     lastVisible: documentSnapshots.docs[documentSnapshots.docs.length - 1]?.id ?? null
   };
 

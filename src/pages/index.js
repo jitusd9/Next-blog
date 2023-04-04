@@ -18,11 +18,9 @@ export default function Home({posts, firstVisible, lastVisible}) {
     return <LoaderComponent />
   }
 
-  const loadMore = async () => {
-    // Reload the page with the next set of documents by adding the lastVisible ID to the query params
-    const nextPageUrl = `/?firstVisible=${firstVisible}&lastVisible=${lastVisible}`;
-    window.location.href = nextPageUrl;
-  };
+  if(posts.length === 0) {
+    router.back();
+  }
 
   return (
     <>
@@ -39,12 +37,10 @@ export default function Home({posts, firstVisible, lastVisible}) {
        {
          posts.length > 0 ?  <div className={styles.pagination}>
 
-         {
-           firstVisible === undefined ? <p className={styles.disabled}>prev</p> : <Link href={`/?firstVisible=${firstVisible}`}>prev</Link>
-         }
+         <button className={styles.prevBtn} onClick={() => router.back()}>prev</button>
 
          {
-           posts.length < 3 ? <p className={styles.disabled}>next</p> : <Link href={`/?lastVisible=${lastVisible}`}>next</Link>
+           posts.length < 3 ? <p className={styles.disabled}>next</p> : <Link href={`/?lastVisible=${lastVisible}&btn=next`}>next</Link>
          }
        </div> : null
        }
@@ -57,13 +53,13 @@ export default function Home({posts, firstVisible, lastVisible}) {
 export async function getServerSideProps(context) {
   // const posts = await getAllPosts();
 
-  const {prev, firstVisible, lastVisible } = context.query
+  const {lastVisible, btn } = context.query
   
-  const data = await getAllPostsPerPage(firstVisible, lastVisible)
+  const data = await getAllPostsPerPage(btn, lastVisible)
 
   // console.log('lastVisible', data.lastVisible)
 
   return {
-    props: { posts: data.posts, firstVisible: data.firstVisible, lastVisible: data.lastVisible },
+    props: { posts: data.posts, lastVisible: data.lastVisible },
   };
 }

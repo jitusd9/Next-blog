@@ -68,6 +68,7 @@
   display: flex;
 }
 
+.pagination .prevBtn,
 .pagination p.disabled,
 .pagination a{
   cursor: pointer;
@@ -80,6 +81,7 @@
   border: 0.5px solid rgb(57, 57, 57);
 }
 
+.pagination .prevBtn:hover,
 .pagination a:hover{
   background-color: rgb(106, 0, 255);
 }
