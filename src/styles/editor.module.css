@@ -1,0 +1,20 @@
+.editorTitle{
+  width: 100%;
+  padding: 1rem 0.5rem;
+  margin-block: 1rem;
+  font-size: 2rem;
+  background-color: transparent;
+  border: 1px solid #ccc;
+}
+
+.editorExcerpt{
+  width: 100%;
+  padding: 1rem 0.5rem;
+  margin-block: 1rem;
+  font-size: 1rem;
+  resize: none;
+  background-color: transparent;
+  border: 1px solid #ccc;
+}
+
+

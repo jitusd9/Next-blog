@@ -3,7 +3,7 @@
 > This is blog is built using Nextjs and Firebase and hosted on Vercel.
 
 You can clone this repository and You need to setup your own configuration for firebase account.
-replace those api keys in FirebaseInit.js with your firebase app
+replace those api keys in firebaseInit.js with your firebase app
 
 ## Features
 
@@ -16,4 +16,3 @@ replace those api keys in FirebaseInit.js with your firebase app
 
 ## 🪲 bug
 > This is a minimum feature application not focused on design as I have used plain CSS and It's not responsive
-> 

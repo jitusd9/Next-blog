@@ -1,0 +1,32 @@
+.form{
+  width: 400px;
+  margin-inline: auto;
+  margin-block: 1rem;
+  border-radius: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(42, 42, 42);
+  padding: 1rem;
+}
+
+.form label{
+  margin-block: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 1rem;
+}
+
+.errMsg{
+  color: rgb(228, 0, 0);
+}
+
+.form button{
+  cursor: pointer;
+}
+
+.flipcard{
+  color: rgb(110, 110, 254);
+  cursor: pointer;
+  margin-block: 1rem;
+  text-align: center;
+}
