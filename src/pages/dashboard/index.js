@@ -9,19 +9,25 @@ import withAuth from "@/utils/withAuth";
 import { createPost } from "@/utils/database";
 import { auth } from "../../../firebaseInit";
 import LoaderComponent from "@/components/Loading";
+import { onSnapshot, query, collection, where, limit, getDocs, startAfter, startAt, getDoc, doc } from "firebase/firestore";
+import { db } from "../../../firebaseInit";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 
-function Index({ posts, firstVisible, lastVisible }) {
+function Index() {
 
   const {currentUser} = useAuth()
   const [open ,setOpen] = useState(false)
   
-
+  const [postList, setPostList] = useState([])
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState(null);
   const [author, setAuthor] = useState(null);
   const [content, setContent] = useState(null);
   const [excerpt, setExcerpt] = useState(null);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [prevItem, setPrevItem] = useState(null);
+  const [disableNext, setDisableNext] = useState(false);
 
   const [msg, setMsg] = useState(null);
   
@@ -46,6 +52,67 @@ function Index({ posts, firstVisible, lastVisible }) {
     }
   }
 
+  const loadMore = async (e) => {
+    setLoading(true)
+    let q
+    let lastSnap = null
+    let prevFirstItem = postList[0].id
+    setPrevItem(prevFirstItem)
+    if(lastVisible || prevFirstItem){
+
+      
+      if(e.target.name === 'prev'){
+        console.log(e.target.name, prevFirstItem, prevItem, lastVisible)
+        const docSnap = await getDoc(doc(collection(db, "posts"), prevItem));
+        lastSnap = startAt(docSnap)
+      }else if(e.target.name === 'next'){
+        console.log(e.target.name, lastVisible, prevItem)
+        const docSnap = await getDoc(doc(collection(db, "posts"), lastVisible));
+        lastSnap = startAfter(docSnap)
+      }
+      
+    }
+    
+    if(currentUser.email === 'admin@example.com'){
+       q = query(collection(db, "posts"), 
+       lastSnap,
+       limit(3))
+    }else{
+       q = query(collection(db, "posts"), where("author", "==", currentUser.email),
+       lastSnap,
+       limit(3));
+    }
+    const querySnapshot = await getDocs(q);
+
+    let posts = []
+
+    querySnapshot.forEach(doc => {
+      let data = doc.data()
+      data.id = doc.id
+      data.createdAt = formatDistanceToNow(doc.data().createdAt.toDate(), { addSuffix: true })
+      posts.push(data);
+    })
+
+
+
+    if(posts.length < 3){
+      setDisableNext(true)
+    }else{
+      setDisableNext(false)
+    }
+
+    if(querySnapshot.empty){
+      setLoading(false)
+      setDisableNext(true)
+      return
+    }
+
+    setLastVisible(posts[posts.length - 1]?.id)
+    setPostList(posts)
+    setLoading(false)
+
+  }
+
   let editorProps = {
     content,
     setTitle,
@@ -55,6 +122,41 @@ function Index({ posts, firstVisible, lastVisible }) {
     handlePublish,
   }
 
+  useEffect(() => {
+    
+    if(currentUser){
+      setLoading(true)
+      let q
+      if(currentUser.email === 'admin@example.com'){
+         q = query(collection(db, "posts"), limit(3))
+      }else{
+         q = query(collection(db, "posts"), where("author", "==", currentUser.email), limit(3));
+      }
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let posts = [];
+ 
+        querySnapshot.forEach((doc) => {
+          let data = doc.data()
+          data.id = doc.id
+          data.createdAt = formatDistanceToNow(doc.data().createdAt.toDate(), { addSuffix: true })
+          posts.push(data);
+        });
+        setLastVisible(posts[posts.length - 1]?.id)
+        setPostList(posts)
+        setLoading(false)
+      });
+
+      return () => {
+        unsubscribe()
+      }
+
+    }
+
+  }, [currentUser])
+  
+  if(loading){
+    return <LoaderComponent />
+  }
 
   return (
     <div className={styles.indexPage}>
@@ -80,7 +182,7 @@ function Index({ posts, firstVisible, lastVisible }) {
         open && !loading ? <BlogEditor {...editorProps} /> : open && loading ? <LoaderComponent /> : null
       }
       {
-        !open ? posts.map((post) => (
+        !open ? postList.map((post) => (
             <BlogCard key={post.id} post={post} from="dashboard" />
         )) : null
       }
@@ -88,12 +190,12 @@ function Index({ posts, firstVisible, lastVisible }) {
       {
         !open ? <div className={styles.pagination}>
 
-        {/* {
-          firstVisible === undefined ? <p className={styles.disabled}>prev</p> : <Link href={`/?firstVisible=${firstVisible}`}>prev</Link>
-        } */}
+        {
+          false ? <p className={styles.disabled}>prev</p> : <button name="prev" onClick={loadMore}>prev</button>
+        }
 
         {
-          posts.length < 3 ? <p className={styles.disabled}>next</p> : <Link href={`/dashboard?userid=${currentUser?.email}?lastVisible=${lastVisible}`}>next</Link>
+          disableNext ? <p className={styles.disabled}>next</p> : <button name="next" onClick={loadMore}>next</button>
         }
       </div> : null
       }

@@ -98,7 +98,7 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background-color: var(--coal);
-  background-image: var(--theme-bg);
+  /* background-image: var(--theme-bg); */
 }
 
 button{

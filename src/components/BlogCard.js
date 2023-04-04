@@ -30,7 +30,7 @@ function BlogCard({post, from}) {
       </div>
       {
         from === 'dashboard' ? <div  className={styles.btns}>
-          <button style={{background: 'black'}}>Edit</button>
+          <button style={{background: 'black'}} title="Not Implemented">Edit</button>
           <button  style={{background: '#c90b0b'}} onClick={() => handleDelete(post.id)}>Delete</button>
         </div> : null
       }

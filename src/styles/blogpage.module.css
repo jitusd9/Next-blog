@@ -19,6 +19,7 @@
 }
 
 .pagination p.disabled,
+.pagination button,
 .pagination a{
   cursor: pointer;
   padding: 0.4rem 0.8rem;
@@ -30,16 +31,21 @@
   border: 0.5px solid rgb(57, 57, 57);
 }
 
-.pagination a:hover{
+.pagination p.disabled{
+  cursor: no-drop;
+  opacity: 0.5;
+}
+
+.pagination button:hover{
   background-color: rgb(106, 0, 255);
 }
 
-.pagination p.disabled{
+.pagination button.disabled{
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.pagination a.disabled:hover{
+.pagination button.disabled:hover{
   background-color: black;
 }
 
