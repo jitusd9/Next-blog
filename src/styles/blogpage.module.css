@@ -13,7 +13,7 @@
   position: relative;
   bottom: 0;
   padding: 0.5rem;
-  width: auto;
+  width: 200px;
   margin-inline: auto;
   display: flex;
 }
@@ -105,7 +105,10 @@
 .commentbox{
   position: relative;
   width: 100%;
-  /* height: 100px; */
+  padding: 6px;
+  border: 1px solid rgb(90, 90, 90);
+  border-radius: 4px;
+  margin-top: 10px;
 }
 
 .commentbox h4{
@@ -116,24 +119,25 @@
 .comment{
   width: 100%;
   margin-block: 5px;
-  padding: 0.2rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  background-color: rgb(90, 90, 90);
+  background-color: rgb(38,38,38);
 }
 
-.comment p{
+.comment .credit{
   font-size: 0.8rem;
   text-align: right;
 }
 
 .commentContent{
-  color: white;
+  color: #7d7dc4;
 }
 
 .commentform{
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 }
 
 .commentform textarea{
@@ -142,6 +146,7 @@
   padding: 0.5rem;
   resize: none;
   border: 1px solid rgb(90, 90, 90);
+  border-radius: 4px;
 }
 
 .commentform textarea:focus{

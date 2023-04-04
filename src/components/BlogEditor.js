@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 
 const ReactQuill = dynamic(import('react-quill'), { ssr: false })
 
+
 function BlogEditor({
   setTitle,
   setAuthor,
@@ -22,9 +23,9 @@ function BlogEditor({
     <>
 
      
-      <input className={styles.editorTitle} type="text" placeholder="title" onChange={e => setTitle(e.target.value)} />
-      <textarea className={styles.editorExcerpt} type="text" placeholder="excerpt" onChange={e => setExcerpt(e.target.value)} />
-      <ReactQuill theme="snow" value={content} onChange={setContent} />
+      <input className={styles.editorTitle} type="text" placeholder="Your post title" onChange={e => setTitle(e.target.value)} />
+      <textarea className={styles.editorExcerpt} type="text" placeholder="A brief about your post" onChange={e => setExcerpt(e.target.value)} />
+      <ReactQuill placeholder="Your content goes here..." theme="snow" value={content} onChange={setContent} />
     </>
   )
 }

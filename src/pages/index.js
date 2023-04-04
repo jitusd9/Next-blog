@@ -29,23 +29,25 @@ export default function Home({posts, firstVisible, lastVisible}) {
 
         <div className={styles.blogList}>
           {
-            posts.map((post, index) =>(
+            posts.length > 0 ? posts.map((post, index) =>(
               <Link key={post.id} href={`/blog/${encodeURIComponent(post.slug)}`}>
                 <BlogCard key={post.id} post={post} />
-              </Link>
-            ))
+              </Link> 
+            )) : <p style={{color: '#555', textAlign : 'center'}}>No Post Available</p>
           }
           
-        <div className={styles.pagination}>
+       {
+         posts.length > 0 ?  <div className={styles.pagination}>
 
-            {/* {
-              firstVisible === undefined ? <p className={styles.disabled}>prev</p> : <Link href={`/?firstVisible=${firstVisible}`}>prev</Link>
-            } */}
+         {
+           firstVisible === undefined ? <p className={styles.disabled}>prev</p> : <Link href={`/?firstVisible=${firstVisible}`}>prev</Link>
+         }
 
-            {
-              posts.length < 3 ? <p className={styles.disabled}>next</p> : <Link href={`/?lastVisible=${lastVisible}`}>next</Link>
-            }
-          </div>
+         {
+           posts.length < 3 ? <p className={styles.disabled}>next</p> : <Link href={`/?lastVisible=${lastVisible}`}>next</Link>
+         }
+       </div> : null
+       }
         </div>
     </>
   )

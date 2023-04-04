@@ -7,11 +7,12 @@ const LoginForm = ({authError, handleLogin, setAuthError, setEmail, setPassword,
   
   return (
     <>
+      
       <form className={styles.form} onSubmit={handleLogin}>
-
+      <h4 style={{textAlign: 'center'}}>Login</h4>
       {
         authError ? <div className={styles.errMsg}>
-          <p>{authError}</p>
+          <p  style={{textAlign: 'center'}}>{authError}</p>
         </div> : null
       }
 

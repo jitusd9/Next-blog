@@ -33,8 +33,14 @@
   justify-content: space-between;
 }
 
-.navbar .user p{
-  color: rgb(89, 56, 255);
+.navbar .user a{
+  display: flex;
+  align-items: center;
+}
+
+
+.navbar .user a p{
+  color: #d6791e;
   font-weight: bold;
   text-transform: capitalize;
 }

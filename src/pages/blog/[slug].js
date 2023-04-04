@@ -19,8 +19,8 @@ function Post({post}) {
   const handleComment = async () =>{
     setLoading(true);
     if(comment){
-      console.log(comment,currentUser.uid, post.id)
-      const response = await createComment(comment, currentUser.uid, post.id)
+      
+      const response = await createComment(comment, currentUser.displayName, post.id)
       console.log(response)
       fetchComments();
       setLoading(false)
@@ -56,8 +56,8 @@ function Post({post}) {
         {
           comments.map((comment) => (
             <div key={comment.id} className={styles.comment}>
-              <h3 className={styles.commentContent}>{comment.content}</h3>
-              <p> {formatDistanceToNow(comment.createdAt.toDate())} ago by jitu</p>
+              <p className={styles.commentContent}>{comment.content}</p>
+              <p className={styles.credit}> {formatDistanceToNow(comment.createdAt.toDate())} ago by {comment.authorId}</p>
             </div>
           ))
         }

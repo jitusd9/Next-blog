@@ -11,10 +11,13 @@
   width: 100%;
   padding: 1rem 0.5rem;
   margin-block: 1rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   resize: none;
   background-color: transparent;
   border: 1px solid #ccc;
 }
 
+.ql-editor{
+  background-color: #fff;
+}
 

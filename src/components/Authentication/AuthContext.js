@@ -3,6 +3,7 @@ import { v4 } from 'uuid';
 import { useRouter } from 'next/router';
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../../../firebaseInit';
+import { saveUserToDB } from '@/utils/database';
 import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
@@ -18,29 +19,13 @@ export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [authError, setAuthError] = useState(null);
 
-  function adminLogin(password){
-    setauthLoading(true)
-
-    if(password === '1234'){
-      let user = {
-        email: 'admin@example.com',
-        displayName: 'admin',
-      }
-      setCurrentUser(user);
-      localStorage.setItem('user', JSON.stringify(user))
-      Cookies.set('loggedIn', true);
-    }else{
-      setAuthError('Login failed')
-      setauthLoading(false)
-    }
-  }
 
   function login(email, password) {
-    console.log('login', email, password);
+
     setauthLoading(true)
     signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
       const user = userCredential.user
-      console.log(user)
+      
       setCurrentUser(user)
       localStorage.setItem('user', JSON.stringify(user))
       setauthLoading(false)
@@ -50,7 +35,7 @@ export default function AuthContextProvider({ children }) {
 
     }).catch((error) => {
       console.log(error);
-      setAuthError('Login failed')
+      setAuthError(error.message)
       setauthLoading(false)
     })
   }
@@ -64,10 +49,12 @@ export default function AuthContextProvider({ children }) {
 
       // Signed in 
       const user = userCredential.user;
+      console.log(user, username, email, password)
       // updating username
       updateProfile(auth.currentUser, {
         displayName: username
       }).then((profile) => {
+        saveUserToDB(user)
         setCurrentUser(user)
         localStorage.setItem('user', JSON.stringify(user))
         setauthLoading(false)
@@ -83,7 +70,7 @@ export default function AuthContextProvider({ children }) {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log('Error in Register', errorCode, errorMessage)
+      setAuthError(errorMessage)
       setauthLoading(false)
     });
 
@@ -124,7 +111,6 @@ export default function AuthContextProvider({ children }) {
     login,
     logout,
     register,
-    adminLogin
   }
 
 

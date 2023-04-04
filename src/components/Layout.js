@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from '@/styles/Layout.module.css'
 import { useAuth } from './Authentication/AuthContext'
 import Link from 'next/link'
+import HomeIcon from "../assets/home.png"
 
 export default function Layout(props) {
 
@@ -33,7 +34,10 @@ export default function Layout(props) {
         <div className={styles.navbar}>
           <div className={styles.user}>
             {
-              currentUser ? <p>{currentUser.displayName}</p> : null
+              currentUser ? <Link  href="/">
+              <Image src={HomeIcon} alt="home icon" height={18} width={18}/>
+              <p>{currentUser.displayName}</p>
+              </Link> : null
             }
           </div>
           <div className={styles.buttons}>

@@ -1,5 +1,5 @@
 import { db } from "../../firebaseInit";
-import { collection, getDocs,getDoc,doc, addDoc, query, where, limit, startAfter, startAt, orderBy, endBefore, serverTimestamp, deleteDoc } from "firebase/firestore";
+import { collection, getDocs,getDoc,doc, addDoc, setDoc, query, where, limit, startAfter, startAt, orderBy, endBefore, serverTimestamp, deleteDoc } from "firebase/firestore";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 
@@ -7,7 +7,15 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 // Users operations
 
 export async function saveUserToDB(user){
-  // create a new user with user.uid being the doc id
+  
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    displayName: user.displayName,
+    email: user.email,
+  });
+  
+  
+
 }
 
 
@@ -69,7 +77,7 @@ export async function getPostByAuthor(mailid) {
   return sortedData
 }
 
-export async function createPost( title, content, excerpt, author ) {
+export async function createPost( title, content, excerpt, author, authorId ) {
   const slug = createSlug(title);
   const date = new Date();
 
@@ -77,6 +85,7 @@ export async function createPost( title, content, excerpt, author ) {
     title,
     content,
     author,
+    authorId,
     slug,
     excerpt,
     createdAt: serverTimestamp()
@@ -138,8 +147,8 @@ export async function getAllPostsPerPage(first,last){
 
   const data = {
     posts,
-    firstVisible:  documentSnapshots.docs[0]?.id, 
-    lastVisible: documentSnapshots.docs[documentSnapshots.docs.length - 1]?.id
+    firstVisible:  documentSnapshots.docs[0]?.id ?? null, 
+    lastVisible: documentSnapshots.docs[documentSnapshots.docs.length - 1]?.id ?? null
   };
 
   return data

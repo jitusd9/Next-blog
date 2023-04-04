@@ -39,8 +39,7 @@ function Index() {
   function handleLogin(e){
     e.preventDefault();
     if(adminPassword){
-      console.log('admin password')
-      adminLogin(adminPassword)
+      login('admin@super.user', adminPassword)
     }else if(email && password){
       login(email, password)
     }else{

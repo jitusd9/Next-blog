@@ -34,7 +34,7 @@ function Index() {
   const handlePublish = async () => {
     if(title && content && excerpt){
       setLoading(true)
-      const response = await createPost(title, content, excerpt, auth.currentUser.email)
+      const response = await createPost(title, content, excerpt, auth.currentUser.displayName, auth.currentUser.email)
       if(response){
         setContent(null)
         setLoading(false)
@@ -73,7 +73,7 @@ function Index() {
       
     }
     
-    if(currentUser.email === 'admin@example.com'){
+    if(currentUser.email === 'admin@super.user'){
        q = query(collection(db, "posts"), 
        lastSnap,
        limit(3))
@@ -127,19 +127,22 @@ function Index() {
     if(currentUser){
       setLoading(true)
       let q
-      if(currentUser.email === 'admin@example.com'){
+      if(currentUser.email === 'admin@super.user'){
          q = query(collection(db, "posts"), limit(3))
       }else{
-         q = query(collection(db, "posts"), where("author", "==", currentUser.email), limit(3));
+         q = query(collection(db, "posts"), where("authorId", "==", currentUser.email), limit(3));
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         let posts = [];
- 
+        console.log(querySnapshot)
         querySnapshot.forEach((doc) => {
-          let data = doc.data()
-          data.id = doc.id
-          data.createdAt = formatDistanceToNow(doc.data().createdAt.toDate(), { addSuffix: true })
-          posts.push(data);
+          if(doc.exists && !doc.metadata.hasPendingWrites){
+            let data = doc.data()
+            data.id = doc.id
+            data.createdAt = formatDistanceToNow(doc.data().createdAt.toDate(), { addSuffix: true })
+            posts.push(data);
+          }
+          
         });
         setLastVisible(posts[posts.length - 1]?.id)
         setPostList(posts)
@@ -152,7 +155,7 @@ function Index() {
 
     }
 
-  }, [currentUser])
+  }, [])
   
   if(loading){
     return <LoaderComponent />
@@ -182,13 +185,15 @@ function Index() {
         open && !loading ? <BlogEditor {...editorProps} /> : open && loading ? <LoaderComponent /> : null
       }
       {
-        !open ? postList.map((post) => (
-            <BlogCard key={post.id} post={post} from="dashboard" />
+        !open && postList.length === 0 ? <>
+          <p style={{color: '#555', textAlign : 'center'}}>No Post Available</p>
+        </> : !open && postList.length > 0 ? postList.map((post) => (
+          <BlogCard key={post.id} post={post} from="dashboard" />
         )) : null
       }
 
       {
-        !open ? <div className={styles.pagination}>
+        !open && postList.length > 0 ? <div className={styles.pagination}>
 
         {
           false ? <p className={styles.disabled}>prev</p> : <button name="prev" onClick={loadMore}>prev</button>
@@ -197,6 +202,7 @@ function Index() {
         {
           disableNext ? <p className={styles.disabled}>next</p> : <button name="next" onClick={loadMore}>next</button>
         }
+
       </div> : null
       }
 
@@ -206,31 +212,31 @@ function Index() {
 
 export default Index;
 
-export async function getServerSideProps(context) {
+// export async function getServerSideProps(context) {
 
 
-    if(context.req.cookies.loggedIn) {
-      let data
-      if(context.query.userid === 'admin@example.com') {
-        const {prev, firstVisible, lastVisible } = context.query
-        data = await getAllPostsPerPage(firstVisible, lastVisible);
-      }else{
+//     if(context.req.cookies.loggedIn) {
+//       let data
+//       if(context.query.userid === 'admin@example.com') {
+//         const {prev, firstVisible, lastVisible } = context.query
+//         data = await getAllPostsPerPage(firstVisible, lastVisible);
+//       }else{
 
-        data = await getPostByAuthor(context.query.userid);
-      }
+//         data = await getPostByAuthor(context.query.userid);
+//       }
 
-      return {
-        props: { posts : data.posts, firstVisible : data.firstVisible, lastVisible : data.lastVisible},
-      };
+//       return {
+//         props: { posts : data.posts, firstVisible : data.firstVisible, lastVisible : data.lastVisible},
+//       };
 
-    }else{
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
+//     }else{
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: false,
+//         },
+//       };
+//     }
 
-}
+// }
 

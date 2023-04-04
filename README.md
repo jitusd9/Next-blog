@@ -5,7 +5,7 @@
 You can clone this repository and You need to setup your own configuration for firebase account.
 and replace those api keys in firebaseInit.js with your firebase app.
 
-Site is Live at [Hosted on Vercel](https://link-url-here.org)
+Site is Live at [Hosted on Vercel](https://next-blog-seven-sage.vercel.app/)
 
 ## 🚀 Features
 
